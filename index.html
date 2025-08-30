@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>SPLASH - Modelos 3D Profesionales</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&family=Press+Start+2P&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-dark: #0d0d12;
+    --bg-gradient: radial-gradient(circle at center, #a1863e, #1a1a23);
+    --gold-metallic: #d4af37;
+    --gold-metallic-dark: #987b25;
+    --gold-shadow: rgba(212,175,55,0.6);
+    --cyan-accent: #00e6f6;
+    --text-light: #e1e1e1;
+    --text-dark: #111;
+    --button-bg: var(--gold-metallic);
+    --button-hover: var(--gold-metallic-dark);
+    --container-bg: rgba(26, 26, 35, 0.85);
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-light);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: var(--bg-gradient);
+    filter: blur(15px);
+    z-index: -2;
+    animation: glow 8s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    0% { filter: blur(10px) brightness(0.85); }
+    100% { filter: blur(20px) brightness(1.15); }
+  }
+  #btn-menu {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 36px;
+    height: 28px;
+    display: none; /* visible solo en móvil */
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    z-index: 200;
+    filter: drop-shadow(0 0 4px var(--gold-shadow));
+  }
+  #btn-menu .bar {
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: var(--gold-metallic);
+    border-radius: 2px;
+  }
+  /* Sidebar cerrado ancho aumentado */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: 100px; /* ancho cerrado aumentado de 60px a 100px */
+    background: var(--bg-dark);
+    border-right: 3px solid var(--gold-metallic);
+    box-shadow: 5px 0 20px var(--gold-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+    padding-left: 0;
+    transition: width 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 0.3s ease;
+    z-index: 105;
+    overflow: hidden;
+  }
+  #sidebar:hover {
+    width: 260px;
+    padding-left: 2rem;
+    align-items: flex-start;
+  }
+  #sidebar .closed-indicator {
+    color: var(--gold-metallic);
+    font-weight: 900;
+    font-size: 2.1rem;
+    width: 100%;
+    text-align: center;
+    user-select: none;
+    line-height: 2rem;
+    margin-bottom: 1.2rem;
+  }
+  #sidebar:hover .closed-indicator {
+    display: none;
+  }
+  #sidebar .logo {
+    font-family: 'Press Start 2P', cursive;
+    font-size: calc(0.5rem + 0.75vw);
+    color: var(--gold-metallic);
+    letter-spacing: 0.25em;
+    margin-bottom: 3rem;
+    width: 100%;
+    text-align: center;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: visible;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    box-sizing: border-box;
+    max-width: 100%;
+    display: none;
+  }
+  #sidebar:hover .logo {
+    display: block;
+  }
+  #sidebar nav ul {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  #sidebar nav li {
+    width: 100%;
+  }
+  #sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.3rem;
+    padding: 1.2rem 1.4rem;
+    border-left: 6px solid transparent;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    border-radius: 12px;
+  }
+  #sidebar nav a svg {
+    width: 32px;
+    height: 32px;
+    fill: var(--gold-metallic);
+    transition: fill 0.3s ease;
+    filter: drop-shadow(0 0 4px var(--gold-shadow));
+  }
+  #sidebar nav a:hover, #sidebar nav a.active {
+    background-color: var(--gold-metallic-dark);
+    color: #fff;
+    border-left-color: var(--gold-metallic);
+  }
+  #sidebar nav a:hover svg, #sidebar nav a.active svg {
+    fill: #fff;
+    filter: drop-shadow(0 0 8px #fff);
+  }
+  #sidebar:not(:hover) nav a span {
+    display: none;
+  }
+  #sidebar:hover nav a span {
+    display: inline;
+    color: var(--gold-metallic);
+    user-select: none;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  /* Margen del contenido coordinado con el ancho cerrado */
+  #content {
+    margin-left: 100px; /* ajustado a nuevo ancho cerrado */
+    padding: 3.5rem 3rem;
+    transition: margin-left 0.4s ease;
+  }
+  #sidebar:hover ~ #content {
+    margin-left: 260px;
+  }
+  /* Animaciones y otras secciones */
+  section {
+    max-width: 960px;
+    margin: 0 auto 3rem auto;
+    background-color: var(--container-bg);
+    border-radius: 25px;
+    box-shadow: 0 15px 60px var(--gold-shadow);
+    padding: 3rem 3.5rem 4rem 3.5rem;
+    color: var(--text-light);
+    animation: fadeMoveUp 1.3s ease forwards;
+  }
+  .section-title {
+    font-size: 3.4rem;
+    font-weight: 900;
+    color: var(--gold-metallic);
+    letter-spacing: 0.13em;
+    margin-bottom: 3rem;
+    text-align: center;
+    user-select: none;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 6px var(--gold-metallic),
+      0 0 18px var(--gold-metallic);
+  }
+  @keyframes fadeMoveUp {
+    0% {
+      opacity: 0;
+      transform: translateY(45px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .welcome-text {
+    font-size: 1.35rem;
+    line-height: 1.8;
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto 3rem auto;
+    color: #eee;
+    text-shadow: 0 0 8px var(--gold-shadow);
+  }
+  .list-benefits {
+    max-width: 780px;
+    margin: 0 auto 0 auto;
+    padding-left: 2rem;
+    color: var(--text-light);
+  }
+  .list-benefits li {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .list-benefits li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: var(--gold-metallic);
+    font-weight: 900;
+    text-shadow:
+      0 0 5px var(--gold-shadow),
+      0 0 15px var(--gold-shadow);
+  }
+  .animated-gears-container {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 2rem 0 3rem 0;
+  }
+  .tuerca-svg {
+    width: 150px;
+    height: 150px;
+    fill: var(--gold-metallic);
+    stroke: var(--gold-metallic-dark);
+    stroke-width: 4px;
+    filter:
+      drop-shadow(0 0 8px var(--gold-shadow));
+    animation: spin 6.5s linear infinite;
+  }
+  .tuerca-rev {
+    animation: spin-rev 4.5s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes spin-rev {
+    to { transform: rotate(-360deg); }
+  }
+  .contact-details {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #121217dd;
+    border-radius: 22px;
+    border: 4px solid var(--gold-metallic);
+    padding: 2rem 2.5rem;
+    color: var(--text-light);
+    box-shadow: 0 0 18px var(--gold-shadow);
+    font-size: 1.3rem;
+    line-height: 2.3;
+  }
+  .contact-details span {
+    display: block;
+    font-weight: 900;
+    margin-bottom: 0.8rem;
+    color: var(--gold-metallic);
+    user-select: none;
+  }
+  .contact-details a {
+    color: var(--cyan-accent);
+    text-decoration: underline;
+    font-weight: 700;
+    transition: color 0.3s ease;
+  }
+  .contact-details a:hover,
+  .contact-details a:focus {
+    color: #3af9ff;
+  }
+  .comments-section {
+    margin-top: 3rem;
+    border: 2px solid var(--gold-metallic);
+    background-color: #0a0a0e;
+    border-radius: 18px;
+    box-shadow: 0 0 16px var(--gold-shadow);
+    padding: 1.3rem;
+    color: var(--text-light);
+    min-height: 100px;
+  }
+  /* Responsive móvil */
+  @media (max-width: 768px) {
+    #btn-menu {
+      display: flex;
+    }
+    /* Sidebar por fuera de la pantalla inicialmente */
+    #sidebar {
+      width: 260px;
+      left: -260px; /* oculto fuera */
+      padding-left: 2rem;
+      align-items: flex-start;
+      transition: left 0.3s ease;
+    }
+    /* Sidebar visible cuando activo */
+    #sidebar.active {
+      left: 0;
+    }
+    /* Evitar hover en móvil */
+    #sidebar:hover {
+      width: 260px;
+      padding-left: 2rem;
+      align-items: flex-start;
+    }
+    #sidebar .logo {
+      display: block;
+    }
+    #sidebar:not(:hover) nav a span {
+      display: inline; /* mostrar texto para mejor UX en móvil */
+      color: var(--gold-metallic);
+      user-select: none;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    #content {
+      margin-left: 0;
+      padding: 3.5rem 1.5rem;
+      transition: margin-left 0.3s ease;
+    }
+    #content.shifted {
+      margin-left: 260px;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Botón hamburguesa móvil -->
+  <button id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" aria-haspopup="true">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+  <nav id="sidebar" aria-label="Barra lateral de navegación">
+    <div class="closed-indicator">»»</div>
+    <div class="logo">SPLASH</div>
+    <nav>
+      <ul>
+        <li><a href="#info" id="nav-info" class="active" tabindex="0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-8h8V3h-8v10zm-10 8h8v-6H3v6z"/></svg><span>Inicio</span>
+        </a></li>
+        <li><a href="#contacto" id="nav-contacto" tabindex="0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 6c0-1.104-.893-2-2-2H4c-1.104 0-2 .896-2 2v12c0 1.104.893 2 2 2h16c1.104 0 2-.896 2-2V6zM4 6h16v12H4V6zm8 7c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3z"/></svg><span>Contacto</span>
+        </a></li>
+      </ul>
+    </nav>
+  </nav>
+  <main id="content" tabindex="-1">
+    <section id="info" aria-label="Información sobre SPLASH" tabindex="0">
+      <h1 class="section-title">Bienvenido a SPLASH</h1>
+      <div class="animated-gears-container" aria-hidden="true" role="img" aria-label="Animación de tuercas giratorias">
+        <svg aria-hidden="true" focusable="false" class="tuerca-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45"/>
+          <path fill="var(--gold-metallic-dark)" d="M50 10 L60 35 L90 40 L65 60 L70 90 L50 75 L30 90 L35 60 L10 40 L40 35 Z"/>
+          <circle cx="50" cy="50" r="15" fill="#25262e" stroke="var(--gold-metallic-dark)" stroke-width="4"/>
+        </svg>
+        <svg aria-hidden="true" focusable="false" class="tuerca-svg tuerca-rev" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45"/>
+          <path fill="var(--gold-metallic-dark)" d="M50 10 L60 35 L90 40 L65 60 L70 90 L50 75 L30 90 L35 60 L10 40 L40 35 Z"/>
+          <circle cx="50" cy="50" r="15" fill="#25262e" stroke="var(--gold-metallic-dark)" stroke-width="4"/>
+        </svg>
+      </div>
+      <p class="welcome-text">SPLASH redefine el mercado de modelos 3D digitales desde la excelencia visual y experiencia de compra optimizada para profesionales que buscan calidad para animación, arquitectura, realidad virtual, y branding.</p>
+      <ul class="list-benefits" aria-label="Beneficios">
+        <li>Presentación escenográfica y atractiva de productos 3D personalizados.</li>
+        <li>Colecciones exclusivas con selección profesional y detalles técnicos.</li>
+        <li>Animaciones interactivas y visuales fluidas con efecto envolvente.</li>
+        <li>Opiniones y reseñas integradas en fichas mediante Disqus.</li>
+        <li>Atención personalizada, soporte y lanzamientos constantes.</li>
+        <li>Modelos optimizados para calidad, detalle y funcionalidad inigualable.</li>
+      </ul>
+    </section>
+    <section id="contacto" aria-label="Sección de contacto" tabindex="0" hidden>
+      <div class="section-title">Contacto</div>
+      <div class="contact-details">
+        <span>Teléfono</span> +34 610 21 14 81
+        <span>Email</span> <a href="mailto:Lighting2385@gmail.com">Lighting2385@gmail.com</a>
+        <br />Para consultas, colaboraciones o soporte directo.
+      </div>
+      <div id="disqus_thread" class="comments-section" aria-label="Comentarios"></div>
+    </section>
+  </main>
+  <script>
+    const links = document.querySelectorAll('#sidebar a');
+    function setActiveSection(hash) {
+      if (!hash) hash = '#info';
+      links.forEach(link => link.classList.remove('active'));
+      const targetLink = Array.from(links).find(a => a.getAttribute('href') === hash);
+      if (targetLink) targetLink.classList.add('active');
+      document.querySelectorAll('main section').forEach(sec => sec.hidden = true);
+      const targetSection = document.querySelector(hash);
+      if (targetSection) {
+        targetSection.hidden = false;
+        targetSection.focus();
+      }
+      if (hash === '#contacto') loadDisqus();
+    }
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const href = e.currentTarget.getAttribute('href');
+        history.pushState(null, '', href);
+        setActiveSection(href);
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('active');
+          content.classList.remove('shifted');
+          btnMenu.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+    window.addEventListener('popstate', () => {
+      setActiveSection(window.location.hash || '#info');
+    });
+    setActiveSection(window.location.hash || '#info');
+
+    let disqusLoaded = false;
+    function loadDisqus() {
+      if (disqusLoaded) return;
+      disqusLoaded = true;
+      var d = document, s = d.createElement('script');
+      s.src = 'https://Lighting.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      s.async = true;
+      (d.head || d.body).appendChild(s);
+    }
+
+    const btnMenu = document.getElementById('btn-menu');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    btnMenu.addEventListener('click', () => {
+      const expanded = btnMenu.getAttribute('aria-expanded') === 'true';
+      btnMenu.setAttribute('aria-expanded', String(!expanded));
+      sidebar.classList.toggle('active');
+      content.classList.toggle('shifted');
+    });
+
+    let mouseMoveTimeout;
+    document.addEventListener('mousemove', (e) => {
+      const openThreshold = 20;
+      const closeThreshold = 40;
+      if (window.innerWidth > 768) {
+        clearTimeout(mouseMoveTimeout);
+        mouseMoveTimeout = setTimeout(() => {
+          if (e.clientX <= openThreshold) {
+            if (!sidebar.classList.contains('active')) {
+              sidebar.classList.add('active');
+              content.classList.add('shifted');
+              btnMenu.setAttribute('aria-expanded', 'true');
+            }
+          } else if (e.clientX > closeThreshold) {
+            if (sidebar.classList.contains('active')) {
+              sidebar.classList.remove('active');
+              content.classList.remove('shifted');
+              btnMenu.setAttribute('aria-expanded', 'false');
+            }
+          }
+        }, 100);
+      }
+    });
+
+    if (window.location.hash === '#contacto') {
+      loadDisqus();
+    }
+  </script>
+</body>
+</html>
