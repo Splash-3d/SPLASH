@@ -1,497 +1,571 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<title>SPLASH - Modelos 3D Profesionales</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&family=Press+Start+2P&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg-dark: #0d0d12;
-    --bg-gradient: radial-gradient(circle at center, #a1863e, #1a1a23);
-    --gold-metallic: #d4af37;
-    --gold-metallic-dark: #987b25;
-    --gold-shadow: rgba(212,175,55,0.6);
-    --cyan-accent: #00e6f6;
-    --text-light: #e1e1e1;
-    --text-dark: #111;
-    --button-bg: var(--gold-metallic);
-    --button-hover: var(--gold-metallic-dark);
-    --container-bg: rgba(26, 26, 35, 0.85);
-  }
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0;
-    height: 100%;
-    font-family: 'Montserrat', Arial, sans-serif;
-    background: var(--bg-gradient);
-    color: var(--text-light);
-    overflow-x: hidden;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: var(--bg-gradient);
-    filter: blur(15px);
-    z-index: -2;
-    animation: glow 8s ease-in-out infinite alternate;
-  }
-  @keyframes glow {
-    0% { filter: blur(10px) brightness(0.85); }
-    100% { filter: blur(20px) brightness(1.15); }
-  }
-  #btn-menu {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    width: 36px;
-    height: 28px;
-    display: none; /* visible solo en móvil */
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    z-index: 200;
-    filter: drop-shadow(0 0 4px var(--gold-shadow));
-  }
-  #btn-menu .bar {
-    display: block;
-    width: 100%;
-    height: 4px;
-    background-color: var(--gold-metallic);
-    border-radius: 2px;
-  }
-  /* Sidebar cerrado ancho aumentado */
-  #sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    height: 100vh;
-    width: 100px; /* ancho cerrado aumentado de 60px a 100px */
-    background: var(--bg-dark);
-    border-right: 3px solid var(--gold-metallic);
-    box-shadow: 5px 0 20px var(--gold-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 2rem;
-    padding-left: 0;
-    transition: width 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 0.3s ease;
-    z-index: 105;
-    overflow: hidden;
-  }
-  #sidebar:hover {
-    width: 260px;
-    padding-left: 2rem;
-    align-items: flex-start;
-  }
-  #sidebar .closed-indicator {
-    color: var(--gold-metallic);
-    font-weight: 900;
-    font-size: 2.1rem;
-    width: 100%;
-    text-align: center;
-    user-select: none;
-    line-height: 2rem;
-    margin-bottom: 1.2rem;
-  }
-  #sidebar:hover .closed-indicator {
-    display: none;
-  }
-  #sidebar .logo {
-    font-family: 'Press Start 2P', cursive;
-    font-size: calc(0.5rem + 0.75vw);
-    color: var(--gold-metallic);
-    letter-spacing: 0.25em;
-    margin-bottom: 3rem;
-    width: 100%;
-    text-align: center;
-    user-select: none;
-    pointer-events: none;
-    white-space: nowrap;
-    overflow: visible;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
-    box-sizing: border-box;
-    max-width: 100%;
-    display: none;
-  }
-  #sidebar:hover .logo {
-    display: block;
-  }
-  #sidebar nav ul {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
-  #sidebar nav li {
-    width: 100%;
-  }
-  #sidebar nav a {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    color: var(--text-light);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.3rem;
-    padding: 1.2rem 1.4rem;
-    border-left: 6px solid transparent;
-    white-space: nowrap;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-    cursor: pointer;
-    border-radius: 12px;
-  }
-  #sidebar nav a svg {
-    width: 32px;
-    height: 32px;
-    fill: var(--gold-metallic);
-    transition: fill 0.3s ease;
-    filter: drop-shadow(0 0 4px var(--gold-shadow));
-  }
-  #sidebar nav a:hover, #sidebar nav a.active {
-    background-color: var(--gold-metallic-dark);
-    color: #fff;
-    border-left-color: var(--gold-metallic);
-  }
-  #sidebar nav a:hover svg, #sidebar nav a.active svg {
-    fill: #fff;
-    filter: drop-shadow(0 0 8px #fff);
-  }
-  #sidebar:not(:hover) nav a span {
-    display: none;
-  }
-  #sidebar:hover nav a span {
-    display: inline;
-    color: var(--gold-metallic);
-    user-select: none;
-    font-weight: 700;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  /* Margen del contenido coordinado con el ancho cerrado */
-  #content {
-    margin-left: 100px; /* ajustado a nuevo ancho cerrado */
-    padding: 3.5rem 3rem;
-    transition: margin-left 0.4s ease;
-  }
-  #sidebar:hover ~ #content {
-    margin-left: 260px;
-  }
-  /* Animaciones y otras secciones */
-  section {
-    max-width: 960px;
-    margin: 0 auto 3rem auto;
-    background-color: var(--container-bg);
-    border-radius: 25px;
-    box-shadow: 0 15px 60px var(--gold-shadow);
-    padding: 3rem 3.5rem 4rem 3.5rem;
-    color: var(--text-light);
-    animation: fadeMoveUp 1.3s ease forwards;
-  }
-  .section-title {
-    font-size: 3.4rem;
-    font-weight: 900;
-    color: var(--gold-metallic);
-    letter-spacing: 0.13em;
-    margin-bottom: 3rem;
-    text-align: center;
-    user-select: none;
-    text-transform: uppercase;
-    text-shadow:
-      0 0 6px var(--gold-metallic),
-      0 0 18px var(--gold-metallic);
-  }
-  @keyframes fadeMoveUp {
-    0% {
-      opacity: 0;
-      transform: translateY(45px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .welcome-text {
-    font-size: 1.35rem;
-    line-height: 1.8;
-    text-align: center;
-    max-width: 780px;
-    margin: 0 auto 3rem auto;
-    color: #eee;
-    text-shadow: 0 0 8px var(--gold-shadow);
-  }
-  .list-benefits {
-    max-width: 780px;
-    margin: 0 auto 0 auto;
-    padding-left: 2rem;
-    color: var(--text-light);
-  }
-  .list-benefits li {
-    margin-bottom: 1rem;
-    font-weight: 700;
-    position: relative;
-    padding-left: 1.5rem;
-  }
-  .list-benefits li::before {
-    content: "✔";
-    position: absolute;
-    left: 0;
-    color: var(--gold-metallic);
-    font-weight: 900;
-    text-shadow:
-      0 0 5px var(--gold-shadow),
-      0 0 15px var(--gold-shadow);
-  }
-  .animated-gears-container {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin: 2rem 0 3rem 0;
-  }
-  .tuerca-svg {
-    width: 150px;
-    height: 150px;
-    fill: var(--gold-metallic);
-    stroke: var(--gold-metallic-dark);
-    stroke-width: 4px;
-    filter:
-      drop-shadow(0 0 8px var(--gold-shadow));
-    animation: spin 6.5s linear infinite;
-  }
-  .tuerca-rev {
-    animation: spin-rev 4.5s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes spin-rev {
-    to { transform: rotate(-360deg); }
-  }
-  .contact-details {
-    max-width: 480px;
-    margin: 0 auto;
-    background: #121217dd;
-    border-radius: 22px;
-    border: 4px solid var(--gold-metallic);
-    padding: 2rem 2.5rem;
-    color: var(--text-light);
-    box-shadow: 0 0 18px var(--gold-shadow);
-    font-size: 1.3rem;
-    line-height: 2.3;
-  }
-  .contact-details span {
-    display: block;
-    font-weight: 900;
-    margin-bottom: 0.8rem;
-    color: var(--gold-metallic);
-    user-select: none;
-  }
-  .contact-details a {
-    color: var(--cyan-accent);
-    text-decoration: underline;
-    font-weight: 700;
-    transition: color 0.3s ease;
-  }
-  .contact-details a:hover,
-  .contact-details a:focus {
-    color: #3af9ff;
-  }
-  .comments-section {
-    margin-top: 3rem;
-    border: 2px solid var(--gold-metallic);
-    background-color: #0a0a0e;
-    border-radius: 18px;
-    box-shadow: 0 0 16px var(--gold-shadow);
-    padding: 1.3rem;
-    color: var(--text-light);
-    min-height: 100px;
-  }
-  /* Responsive móvil */
-  @media (max-width: 768px) {
-    #btn-menu {
-      display: flex;
-    }
-    /* Sidebar por fuera de la pantalla inicialmente */
-    #sidebar {
-      width: 260px;
-      left: -260px; /* oculto fuera */
-      padding-left: 2rem;
-      align-items: flex-start;
-      transition: left 0.3s ease;
-    }
-    /* Sidebar visible cuando activo */
-    #sidebar.active {
-      left: 0;
-    }
-    /* Evitar hover en móvil */
-    #sidebar:hover {
-      width: 260px;
-      padding-left: 2rem;
-      align-items: flex-start;
-    }
-    #sidebar .logo {
-      display: block;
-    }
-    #sidebar:not(:hover) nav a span {
-      display: inline; /* mostrar texto para mejor UX en móvil */
-      color: var(--gold-metallic);
-      user-select: none;
-      font-weight: 700;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    #content {
-      margin-left: 0;
-      padding: 3.5rem 1.5rem;
-      transition: margin-left 0.3s ease;
-    }
-    #content.shifted {
-      margin-left: 260px;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPLASH - Modelos 3D Profesionales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a0a14;
+            --secondary: #121220;
+            --accent: #d4af37;
+            --accent-light: #f0e68c;
+            --text: #e0e0ff;
+            --text-secondary: #a0a0c0;
+            --success: #00e6f6;
+            --card-bg: rgba(20, 20, 35, 0.7);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --glow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), #080810);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 230, 246, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+
+        /* Sections */
+        section {
+            display: none;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Models Gallery */
+        .models-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .models-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+        }
+
+        .model-categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 280px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3);
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .category-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent), #b89b2a);
+            color: var(--primary);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 900px) {
+            .contact-container {
+                flex-direction: column;
+            }
+        }
+
+        .contact-info {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .contact-info h2, .contact-form h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .info-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .info-item i {
+            font-size: 1.4rem;
+            color: var(--accent);
+            min-width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-text h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+        }
+
+        .info-text p, .info-text a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .info-text a:hover {
+            color: var(--success);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(30, 30, 50, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
+
+        textarea.form-control {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            nav ul { gap: 1.2rem; }
+            .contact-info, .contact-form { padding: 1.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2rem; }
+            .logo { font-size: 1.8rem; }
+            .social-links { flex-wrap: wrap; }
+            .btn { width: 100%; justify-content: center; }
+            .model-categories { flex-direction: column; align-items: center; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Botón hamburguesa móvil -->
-  <button id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" aria-haspopup="true">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
-  <nav id="sidebar" aria-label="Barra lateral de navegación">
-    <div class="closed-indicator">»»</div>
-    <div class="logo">SPLASH</div>
-    <nav>
-      <ul>
-        <li><a href="#info" id="nav-info" class="active" tabindex="0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-8h8V3h-8v10zm-10 8h8v-6H3v6z"/></svg><span>Inicio</span>
-        </a></li>
-        <li><a href="#contacto" id="nav-contacto" tabindex="0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 6c0-1.104-.893-2-2-2H4c-1.104 0-2 .896-2 2v12c0 1.104.893 2 2 2h16c1.104 0 2-.896 2-2V6zM4 6h16v12H4V6zm8 7c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3z"/></svg><span>Contacto</span>
-        </a></li>
-      </ul>
-    </nav>
-  </nav>
-  <main id="content" tabindex="-1">
-    <section id="info" aria-label="Información sobre SPLASH" tabindex="0">
-      <h1 class="section-title">Bienvenido a SPLASH</h1>
-      <div class="animated-gears-container" aria-hidden="true" role="img" aria-label="Animación de tuercas giratorias">
-        <svg aria-hidden="true" focusable="false" class="tuerca-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45"/>
-          <path fill="var(--gold-metallic-dark)" d="M50 10 L60 35 L90 40 L65 60 L70 90 L50 75 L30 90 L35 60 L10 40 L40 35 Z"/>
-          <circle cx="50" cy="50" r="15" fill="#25262e" stroke="var(--gold-metallic-dark)" stroke-width="4"/>
-        </svg>
-        <svg aria-hidden="true" focusable="false" class="tuerca-svg tuerca-rev" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45"/>
-          <path fill="var(--gold-metallic-dark)" d="M50 10 L60 35 L90 40 L65 60 L70 90 L50 75 L30 90 L35 60 L10 40 L40 35 Z"/>
-          <circle cx="50" cy="50" r="15" fill="#25262e" stroke="var(--gold-metallic-dark)" stroke-width="4"/>
-        </svg>
-      </div>
-      <p class="welcome-text">SPLASH redefine el mercado de modelos 3D digitales desde la excelencia visual y experiencia de compra optimizada para profesionales que buscan calidad para animación, arquitectura, realidad virtual, y branding.</p>
-      <ul class="list-benefits" aria-label="Beneficios">
-        <li>Presentación escenográfica y atractiva de productos 3D personalizados.</li>
-        <li>Colecciones exclusivas con selección profesional y detalles técnicos.</li>
-        <li>Animaciones interactivas y visuales fluidas con efecto envolvente.</li>
-        <li>Opiniones y reseñas integradas en fichas mediante Disqus.</li>
-        <li>Atención personalizada, soporte y lanzamientos constantes.</li>
-        <li>Modelos optimizados para calidad, detalle y funcionalidad inigualable.</li>
-      </ul>
-    </section>
-    <section id="contacto" aria-label="Sección de contacto" tabindex="0" hidden>
-      <div class="section-title">Contacto</div>
-      <div class="contact-details">
-        <span>Teléfono</span> +34 610 21 14 81
-        <span>Email</span> <a href="mailto:Lighting2385@gmail.com">Lighting2385@gmail.com</a>
-        <br />Para consultas, colaboraciones o soporte directo.
-      </div>
-      <div id="disqus_thread" class="comments-section" aria-label="Comentarios"></div>
-    </section>
-  </main>
-  <script>
-    const links = document.querySelectorAll('#sidebar a');
-    function setActiveSection(hash) {
-      if (!hash) hash = '#info';
-      links.forEach(link => link.classList.remove('active'));
-      const targetLink = Array.from(links).find(a => a.getAttribute('href') === hash);
-      if (targetLink) targetLink.classList.add('active');
-      document.querySelectorAll('main section').forEach(sec => sec.hidden = true);
-      const targetSection = document.querySelector(hash);
-      if (targetSection) {
-        targetSection.hidden = false;
-        targetSection.focus();
-      }
-      if (hash === '#contacto') loadDisqus();
-    }
-    links.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const href = e.currentTarget.getAttribute('href');
-        history.pushState(null, '', href);
-        setActiveSection(href);
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove('active');
-          content.classList.remove('shifted');
-          btnMenu.setAttribute('aria-expanded', 'false');
-        }
-      });
-    });
-    window.addEventListener('popstate', () => {
-      setActiveSection(window.location.hash || '#info');
-    });
-    setActiveSection(window.location.hash || '#info');
+    <div class="container">
+        <header>
+            <div class="logo">SPLASH</div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="https://www.cgtrader.com/designers/splash-3d" target="_blank"><i class="fas fa-cube"></i> Modelos 3D</a></li>
+                    <li><a href="#contacto" class="nav-link"><i class="fas fa-envelope"></i> Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    let disqusLoaded = false;
-    function loadDisqus() {
-      if (disqusLoaded) return;
-      disqusLoaded = true;
-      var d = document, s = d.createElement('script');
-      s.src = 'https://Lighting.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      s.async = true;
-      (d.head || d.body).appendChild(s);
-    }
+        <!-- Sección Inicio -->
+        <section id="inicio" class="active">
+            <div class="hero">
+                <h1>Modelos 3D Profesionales para Proyectos Exigentes</h1>
+                <p>Soy SPLASH, artista 3D especializado en crear assets de alta calidad para arquitectura, videojuegos, visualización y realidad virtual. Mis modelos combinan precisión técnica, estética visual y optimización para producción.</p>
+            </div>
 
-    const btnMenu = document.getElementById('btn-menu');
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-    btnMenu.addEventListener('click', () => {
-      const expanded = btnMenu.getAttribute('aria-expanded') === 'true';
-      btnMenu.setAttribute('aria-expanded', String(!expanded));
-      sidebar.classList.toggle('active');
-      content.classList.toggle('shifted');
-    });
+            <div class="models-section">
+                <h2>Mis Modelos Destacados</h2>
+                <div class="model-categories">
+                    <!-- Modelo 1: Porsche 911 Turbo -->
+                    <div class="category-card">
+                        <h3>Porsche 911 Turbo</h3>
+                        <p>Modelo de alta calidad del icónico Porsche 911 Turbo, perfecto para renders fotorrealistas y proyectos de automoción.</p>
+                        <a href="https://www.cgtrader.com/3d-models/vehicle/industrial-vehicle/high-quality-classic-porsche-911-turbo-3d-model" target="_blank" class="btn">
+                            <i class="fas fa-eye"></i> Ver Modelo
+                        </a>
+                    </div>
 
-    let mouseMoveTimeout;
-    document.addEventListener('mousemove', (e) => {
-      const openThreshold = 20;
-      const closeThreshold = 40;
-      if (window.innerWidth > 768) {
-        clearTimeout(mouseMoveTimeout);
-        mouseMoveTimeout = setTimeout(() => {
-          if (e.clientX <= openThreshold) {
-            if (!sidebar.classList.contains('active')) {
-              sidebar.classList.add('active');
-              content.classList.add('shifted');
-              btnMenu.setAttribute('aria-expanded', 'true');
+                    <!-- Modelo 2: Mercedes-Benz AMG GT-R -->
+                    <div class="category-card">
+                        <h3>Mercedes-Benz AMG GT-R</h3>
+                        <p>Modelo game-ready con texturas PBR y rigging básico, ideal para juegos, simuladores y AR/VR.</p>
+                        <a href="https://www.cgtrader.com/free-3d-models/vehicle/industrial-vehicle/mercedes-benz-amg-gtr-ae3bc5d2-8430-45c3-bae5-c38f35ca7133" target="_blank" class="btn">
+                            <i class="fas fa-car"></i> Ver Modelo
+                        </a>
+                    </div>
+
+                    <!-- Modelo 3: Supra MKV -->
+                    <div class="category-card">
+                        <h3>Toyota GR Supra MKV</h3>
+                        <p>Modelo rigged y optimizado para Unreal Engine y Unity, con detalles interiores y exteriores realistas.</p>
+                        <a href="https://www.cgtrader.com/3d-models/car/racing-car/supra-mkv-rigged-model-game-ready" target="_blank" class="btn">
+                            <i class="fas fa-racing-helmet"></i> Ver Modelo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Contacto -->
+        <section id="contacto">
+            <div class="hero">
+                <h1>¿Trabajamos Juntos?</h1>
+                <p>¿Necesitas un modelo personalizado? ¿Tienes una idea para una colaboración? Estoy abierto a proyectos, comisiones y consultas profesionales.</p>
+            </div>
+
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2><i class="fas fa-headset"></i> Información</h2>
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <div class="info-text">
+                            <h3>Artista 3D</h3>
+                            <p>SPLASH — Modelador profesional</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="info-text">
+                            <h3>Email</h3>
+                            <a href="mailto:Lighting2385@gmail.com">Lighting2385@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-globe"></i>
+                        <div class="info-text">
+                            <h3>CGTrader</h3>
+                            <a href="https://www.cgtrader.com/designers/splash-3d" target="_blank">Perfil Oficial</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div class="info-text">
+                            <h3>Respuesta</h3>
+                            <p>En 24–48 horas hábiles</p>
+                        </div>
+                    </div>
+                    <!-- ✅ SOLO CGTRADER, SIN OTROS ICONOS -->
+                    <div class="social-links">
+                        <a href="https://www.cgtrader.com/designers/splash-3d" class="social-link" target="_blank" title="CGTrader">
+                            <i class="fas fa-cube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h2><i class="fas fa-paper-plane"></i> Envíame un Mensaje</h2>
+                    <!-- ✅ FORMULARIO REAL CON FORMSPREE -->
+                    <form action="https://formspree.io/f/xqayldaa" method="POST">
+                        <div class="form-group">
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Colaboración, comisión, etc." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" name="message" class="form-control" placeholder="Cuéntame sobre tu proyecto..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Enviar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 SPLASH — Modelos 3D Profesionales. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Cambiar entre secciones
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Actualizar URL
+                const targetId = this.getAttribute('href').substring(1);
+                history.pushState(null, '', `#${targetId}`);
+                
+                // Activar enlace
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Mostrar sección
+                document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // Soporte para navegación con botón atrás/adelante
+        window.addEventListener('popstate', function() {
+            const hash = window.location.hash.substring(1) || 'inicio';
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-link[href="#${hash}"]`);
+            if (activeLink) activeLink.classList.add('active');
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            const targetSection = document.getElementById(hash);
+            if (targetSection) targetSection.classList.add('active');
+        });
+
+        // Inicializar según URL actual
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1) || 'inicio';
+            if (hash === 'contacto') {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                const contactLink = document.querySelector('.nav-link[href="#contacto"]');
+                if (contactLink) contactLink.classList.add('active');
+                document.getElementById('inicio').classList.remove('active');
+                document.getElementById('contacto').classList.add('active');
             }
-          } else if (e.clientX > closeThreshold) {
-            if (sidebar.classList.contains('active')) {
-              sidebar.classList.remove('active');
-              content.classList.remove('shifted');
-              btnMenu.setAttribute('aria-expanded', 'false');
-            }
-          }
-        }, 100);
-      }
-    });
-
-    if (window.location.hash === '#contacto') {
-      loadDisqus();
-    }
-  </script>
+        });
+    </script>
 </body>
 </html>
