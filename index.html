@@ -1,497 +1,634 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<title>SPLASH - Modelos 3D Profesionales</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&family=Press+Start+2P&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg-dark: #0d0d12;
-    --bg-gradient: radial-gradient(circle at center, #a1863e, #1a1a23);
-    --gold-metallic: #d4af37;
-    --gold-metallic-dark: #987b25;
-    --gold-shadow: rgba(212,175,55,0.6);
-    --cyan-accent: #00e6f6;
-    --text-light: #e1e1e1;
-    --text-dark: #111;
-    --button-bg: var(--gold-metallic);
-    --button-hover: var(--gold-metallic-dark);
-    --container-bg: rgba(26, 26, 35, 0.85);
-  }
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0;
-    height: 100%;
-    font-family: 'Montserrat', Arial, sans-serif;
-    background: var(--bg-gradient);
-    color: var(--text-light);
-    overflow-x: hidden;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: var(--bg-gradient);
-    filter: blur(15px);
-    z-index: -2;
-    animation: glow 8s ease-in-out infinite alternate;
-  }
-  @keyframes glow {
-    0% { filter: blur(10px) brightness(0.85); }
-    100% { filter: blur(20px) brightness(1.15); }
-  }
-  #btn-menu {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    width: 36px;
-    height: 28px;
-    display: none; /* visible solo en móvil */
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    z-index: 200;
-    filter: drop-shadow(0 0 4px var(--gold-shadow));
-  }
-  #btn-menu .bar {
-    display: block;
-    width: 100%;
-    height: 4px;
-    background-color: var(--gold-metallic);
-    border-radius: 2px;
-  }
-  /* Sidebar cerrado ancho aumentado */
-  #sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    height: 100vh;
-    width: 100px; /* ancho cerrado aumentado de 60px a 100px */
-    background: var(--bg-dark);
-    border-right: 3px solid var(--gold-metallic);
-    box-shadow: 5px 0 20px var(--gold-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 2rem;
-    padding-left: 0;
-    transition: width 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 0.3s ease;
-    z-index: 105;
-    overflow: hidden;
-  }
-  #sidebar:hover {
-    width: 260px;
-    padding-left: 2rem;
-    align-items: flex-start;
-  }
-  #sidebar .closed-indicator {
-    color: var(--gold-metallic);
-    font-weight: 900;
-    font-size: 2.1rem;
-    width: 100%;
-    text-align: center;
-    user-select: none;
-    line-height: 2rem;
-    margin-bottom: 1.2rem;
-  }
-  #sidebar:hover .closed-indicator {
-    display: none;
-  }
-  #sidebar .logo {
-    font-family: 'Press Start 2P', cursive;
-    font-size: calc(0.5rem + 0.75vw);
-    color: var(--gold-metallic);
-    letter-spacing: 0.25em;
-    margin-bottom: 3rem;
-    width: 100%;
-    text-align: center;
-    user-select: none;
-    pointer-events: none;
-    white-space: nowrap;
-    overflow: visible;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
-    box-sizing: border-box;
-    max-width: 100%;
-    display: none;
-  }
-  #sidebar:hover .logo {
-    display: block;
-  }
-  #sidebar nav ul {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
-  #sidebar nav li {
-    width: 100%;
-  }
-  #sidebar nav a {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    color: var(--text-light);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.3rem;
-    padding: 1.2rem 1.4rem;
-    border-left: 6px solid transparent;
-    white-space: nowrap;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-    cursor: pointer;
-    border-radius: 12px;
-  }
-  #sidebar nav a svg {
-    width: 32px;
-    height: 32px;
-    fill: var(--gold-metallic);
-    transition: fill 0.3s ease;
-    filter: drop-shadow(0 0 4px var(--gold-shadow));
-  }
-  #sidebar nav a:hover, #sidebar nav a.active {
-    background-color: var(--gold-metallic-dark);
-    color: #fff;
-    border-left-color: var(--gold-metallic);
-  }
-  #sidebar nav a:hover svg, #sidebar nav a.active svg {
-    fill: #fff;
-    filter: drop-shadow(0 0 8px #fff);
-  }
-  #sidebar:not(:hover) nav a span {
-    display: none;
-  }
-  #sidebar:hover nav a span {
-    display: inline;
-    color: var(--gold-metallic);
-    user-select: none;
-    font-weight: 700;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  /* Margen del contenido coordinado con el ancho cerrado */
-  #content {
-    margin-left: 100px; /* ajustado a nuevo ancho cerrado */
-    padding: 3.5rem 3rem;
-    transition: margin-left 0.4s ease;
-  }
-  #sidebar:hover ~ #content {
-    margin-left: 260px;
-  }
-  /* Animaciones y otras secciones */
-  section {
-    max-width: 960px;
-    margin: 0 auto 3rem auto;
-    background-color: var(--container-bg);
-    border-radius: 25px;
-    box-shadow: 0 15px 60px var(--gold-shadow);
-    padding: 3rem 3.5rem 4rem 3.5rem;
-    color: var(--text-light);
-    animation: fadeMoveUp 1.3s ease forwards;
-  }
-  .section-title {
-    font-size: 3.4rem;
-    font-weight: 900;
-    color: var(--gold-metallic);
-    letter-spacing: 0.13em;
-    margin-bottom: 3rem;
-    text-align: center;
-    user-select: none;
-    text-transform: uppercase;
-    text-shadow:
-      0 0 6px var(--gold-metallic),
-      0 0 18px var(--gold-metallic);
-  }
-  @keyframes fadeMoveUp {
-    0% {
-      opacity: 0;
-      transform: translateY(45px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .welcome-text {
-    font-size: 1.35rem;
-    line-height: 1.8;
-    text-align: center;
-    max-width: 780px;
-    margin: 0 auto 3rem auto;
-    color: #eee;
-    text-shadow: 0 0 8px var(--gold-shadow);
-  }
-  .list-benefits {
-    max-width: 780px;
-    margin: 0 auto 0 auto;
-    padding-left: 2rem;
-    color: var(--text-light);
-  }
-  .list-benefits li {
-    margin-bottom: 1rem;
-    font-weight: 700;
-    position: relative;
-    padding-left: 1.5rem;
-  }
-  .list-benefits li::before {
-    content: "✔";
-    position: absolute;
-    left: 0;
-    color: var(--gold-metallic);
-    font-weight: 900;
-    text-shadow:
-      0 0 5px var(--gold-shadow),
-      0 0 15px var(--gold-shadow);
-  }
-  .animated-gears-container {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin: 2rem 0 3rem 0;
-  }
-  .tuerca-svg {
-    width: 150px;
-    height: 150px;
-    fill: var(--gold-metallic);
-    stroke: var(--gold-metallic-dark);
-    stroke-width: 4px;
-    filter:
-      drop-shadow(0 0 8px var(--gold-shadow));
-    animation: spin 6.5s linear infinite;
-  }
-  .tuerca-rev {
-    animation: spin-rev 4.5s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes spin-rev {
-    to { transform: rotate(-360deg); }
-  }
-  .contact-details {
-    max-width: 480px;
-    margin: 0 auto;
-    background: #121217dd;
-    border-radius: 22px;
-    border: 4px solid var(--gold-metallic);
-    padding: 2rem 2.5rem;
-    color: var(--text-light);
-    box-shadow: 0 0 18px var(--gold-shadow);
-    font-size: 1.3rem;
-    line-height: 2.3;
-  }
-  .contact-details span {
-    display: block;
-    font-weight: 900;
-    margin-bottom: 0.8rem;
-    color: var(--gold-metallic);
-    user-select: none;
-  }
-  .contact-details a {
-    color: var(--cyan-accent);
-    text-decoration: underline;
-    font-weight: 700;
-    transition: color 0.3s ease;
-  }
-  .contact-details a:hover,
-  .contact-details a:focus {
-    color: #3af9ff;
-  }
-  .comments-section {
-    margin-top: 3rem;
-    border: 2px solid var(--gold-metallic);
-    background-color: #0a0a0e;
-    border-radius: 18px;
-    box-shadow: 0 0 16px var(--gold-shadow);
-    padding: 1.3rem;
-    color: var(--text-light);
-    min-height: 100px;
-  }
-  /* Responsive móvil */
-  @media (max-width: 768px) {
-    #btn-menu {
-      display: flex;
-    }
-    /* Sidebar por fuera de la pantalla inicialmente */
-    #sidebar {
-      width: 260px;
-      left: -260px; /* oculto fuera */
-      padding-left: 2rem;
-      align-items: flex-start;
-      transition: left 0.3s ease;
-    }
-    /* Sidebar visible cuando activo */
-    #sidebar.active {
-      left: 0;
-    }
-    /* Evitar hover en móvil */
-    #sidebar:hover {
-      width: 260px;
-      padding-left: 2rem;
-      align-items: flex-start;
-    }
-    #sidebar .logo {
-      display: block;
-    }
-    #sidebar:not(:hover) nav a span {
-      display: inline; /* mostrar texto para mejor UX en móvil */
-      color: var(--gold-metallic);
-      user-select: none;
-      font-weight: 700;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    #content {
-      margin-left: 0;
-      padding: 3.5rem 1.5rem;
-      transition: margin-left 0.3s ease;
-    }
-    #content.shifted {
-      margin-left: 260px;
-    }
-  }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SPLASH — Modelos 3D profesionales para videojuegos, arquitectura, VR y visualización. Assets riggeados, optimizados y listos para Unity, Unreal Engine y más." />
+    <title>SPLASH - Modelos 3D Profesionales</title>
+    
+    <!-- Fuentes e íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Orbitron:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #090912;
+            --secondary: #0e0e1a;
+            --accent: #e6c76b;
+            --accent-neon: #f5e6b8;
+            --text: #f0f4ff;
+            --text-secondary: #b0b8d0;
+            --success: #00f0ff;
+            --card-bg: rgba(12, 12, 24, 0.7);
+            --transition: all 0.5s cubic-bezier(0.16, 0.84, 0.44, 1);
+            --glow-accent: 0 0 25px rgba(230, 199, 107, 0.7);
+            --glow-success: 0 0 25px rgba(0, 240, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            background: #090912;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.4rem 0;
+            margin-bottom: 3.2rem;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 12px rgba(230, 199, 107, 0.5);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.12rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        nav a:hover::after,
+        nav a.active::after {
+            width: 100%;
+        }
+
+        /* Sections */
+        section {
+            display: none;
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 0.84, 0.44, 1);
+        }
+
+        section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 4.5rem;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.6rem;
+            font-weight: 700;
+            margin-bottom: 1.6rem;
+            background: linear-gradient(90deg, var(--accent), var(--success), white);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.15;
+            text-shadow: 0 0 15px rgba(230, 199, 107, 0.4);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 720px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Models */
+        .models-section {
+            text-align: center;
+            margin-bottom: 4.5rem;
+        }
+
+        .models-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.3rem;
+            margin-bottom: 2.8rem;
+            color: var(--accent);
+            text-shadow: 0 0 12px rgba(230, 199, 107, 0.4);
+        }
+
+        .model-categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2.4rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 2.3rem;
+            width: 295px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(230, 199, 107, 0.1);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(8px);
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), var(--glow-accent);
+            border-color: rgba(230, 199, 107, 0.3);
+        }
+
+        .category-card h3 {
+            font-size: 1.45rem;
+            margin-bottom: 1.2rem;
+            color: var(--accent);
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .category-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.6rem;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            font-weight: 300;
+            flex-grow: 1;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent), #d0b05a);
+            color: var(--primary);
+            border: none;
+            padding: 0.95rem 2rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            text-decoration: none;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 22px rgba(230, 199, 107, 0.6), var(--glow-accent);
+        }
+
+        /* Contact */
+        .contact-container {
+            display: flex;
+            gap: 2.8rem;
+            margin-bottom: 4.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .contact-container {
+                flex-direction: column;
+            }
+        }
+
+        .contact-info,
+        .contact-form {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 2.6rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(230, 199, 107, 0.1);
+        }
+
+        .contact-info h2,
+        .contact-form h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.85rem;
+            margin-bottom: 2.2rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 1.3rem;
+            margin-bottom: 1.6rem;
+            padding: 1rem;
+            border-radius: 14px;
+            transition: var(--transition);
+        }
+
+        .info-item:hover {
+            background: rgba(230, 199, 107, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .info-item i {
+            font-size: 1.4rem;
+            color: var(--accent);
+            min-width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-text h3 {
+            font-size: 1.18rem;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .info-text p,
+        .info-text a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .info-text a:hover {
+            color: var(--success);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(230, 199, 107, 0.1);
+            color: var(--accent);
+            font-size: 1.15rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: var(--glow-accent);
+        }
+
+        .form-group {
+            margin-bottom: 1.7rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.7rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1.1rem 1.3rem;
+            background: rgba(20, 20, 38, 0.6);
+            border: 1px solid rgba(230, 199, 107, 0.3);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--glow-accent);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.2rem 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(230, 199, 107, 0.15);
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.6rem; }
+            .models-section h2 { font-size: 2.1rem; }
+            nav ul { gap: 1.3rem; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 1.3rem; }
+            header { flex-direction: column; gap: 1rem; text-align: center; }
+            nav ul { flex-wrap: wrap; justify-content: center; gap: 0.9rem; }
+            .logo { font-size: 2.1rem; }
+            .hero h1 { font-size: 2.1rem; line-height: 1.25; }
+            .hero p { font-size: 1.1rem; }
+            .models-section h2 { font-size: 1.9rem; }
+            .model-categories { flex-direction: column; align-items: center; gap: 1.8rem; }
+            .category-card { width: 100%; max-width: 360px; padding: 1.9rem; }
+            .btn { width: 100%; padding: 1.1rem; font-size: 1.1rem; }
+            .contact-container { flex-direction: column; gap: 2rem; }
+            .contact-info,
+            .contact-form { padding: 2.2rem 1.5rem; }
+            .info-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Botón hamburguesa móvil -->
-  <button id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" aria-haspopup="true">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
-  <nav id="sidebar" aria-label="Barra lateral de navegación">
-    <div class="closed-indicator">»»</div>
-    <div class="logo">SPLASH</div>
-    <nav>
-      <ul>
-        <li><a href="#info" id="nav-info" class="active" tabindex="0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-8h8V3h-8v10zm-10 8h8v-6H3v6z"/></svg><span>Inicio</span>
-        </a></li>
-        <li><a href="#contacto" id="nav-contacto" tabindex="0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 6c0-1.104-.893-2-2-2H4c-1.104 0-2 .896-2 2v12c0 1.104.893 2 2 2h16c1.104 0 2-.896 2-2V6zM4 6h16v12H4V6zm8 7c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3z"/></svg><span>Contacto</span>
-        </a></li>
-      </ul>
-    </nav>
-  </nav>
-  <main id="content" tabindex="-1">
-    <section id="info" aria-label="Información sobre SPLASH" tabindex="0">
-      <h1 class="section-title">Bienvenido a SPLASH</h1>
-      <div class="animated-gears-container" aria-hidden="true" role="img" aria-label="Animación de tuercas giratorias">
-        <svg aria-hidden="true" focusable="false" class="tuerca-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45"/>
-          <path fill="var(--gold-metallic-dark)" d="M50 10 L60 35 L90 40 L65 60 L70 90 L50 75 L30 90 L35 60 L10 40 L40 35 Z"/>
-          <circle cx="50" cy="50" r="15" fill="#25262e" stroke="var(--gold-metallic-dark)" stroke-width="4"/>
-        </svg>
-        <svg aria-hidden="true" focusable="false" class="tuerca-svg tuerca-rev" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45"/>
-          <path fill="var(--gold-metallic-dark)" d="M50 10 L60 35 L90 40 L65 60 L70 90 L50 75 L30 90 L35 60 L10 40 L40 35 Z"/>
-          <circle cx="50" cy="50" r="15" fill="#25262e" stroke="var(--gold-metallic-dark)" stroke-width="4"/>
-        </svg>
-      </div>
-      <p class="welcome-text">SPLASH redefine el mercado de modelos 3D digitales desde la excelencia visual y experiencia de compra optimizada para profesionales que buscan calidad para animación, arquitectura, realidad virtual, y branding.</p>
-      <ul class="list-benefits" aria-label="Beneficios">
-        <li>Presentación escenográfica y atractiva de productos 3D personalizados.</li>
-        <li>Colecciones exclusivas con selección profesional y detalles técnicos.</li>
-        <li>Animaciones interactivas y visuales fluidas con efecto envolvente.</li>
-        <li>Opiniones y reseñas integradas en fichas mediante Disqus.</li>
-        <li>Atención personalizada, soporte y lanzamientos constantes.</li>
-        <li>Modelos optimizados para calidad, detalle y funcionalidad inigualable.</li>
-      </ul>
-    </section>
-    <section id="contacto" aria-label="Sección de contacto" tabindex="0" hidden>
-      <div class="section-title">Contacto</div>
-      <div class="contact-details">
-        <span>Teléfono</span> +34 610 21 14 81
-        <span>Email</span> <a href="mailto:Lighting2385@gmail.com">Lighting2385@gmail.com</a>
-        <br />Para consultas, colaboraciones o soporte directo.
-      </div>
-      <div id="disqus_thread" class="comments-section" aria-label="Comentarios"></div>
-    </section>
-  </main>
-  <script>
-    const links = document.querySelectorAll('#sidebar a');
-    function setActiveSection(hash) {
-      if (!hash) hash = '#info';
-      links.forEach(link => link.classList.remove('active'));
-      const targetLink = Array.from(links).find(a => a.getAttribute('href') === hash);
-      if (targetLink) targetLink.classList.add('active');
-      document.querySelectorAll('main section').forEach(sec => sec.hidden = true);
-      const targetSection = document.querySelector(hash);
-      if (targetSection) {
-        targetSection.hidden = false;
-        targetSection.focus();
-      }
-      if (hash === '#contacto') loadDisqus();
-    }
-    links.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const href = e.currentTarget.getAttribute('href');
-        history.pushState(null, '', href);
-        setActiveSection(href);
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove('active');
-          content.classList.remove('shifted');
-          btnMenu.setAttribute('aria-expanded', 'false');
+
+    <!-- 🌌 FONDO ANIMADO VISIBLE - SIN PROBLEMAS DE VISIBILIDAD -->
+    <svg class="dynamic-bg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <radialGradient id="grad1" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#e6c76b" stop-opacity="0.12"/>
+                <stop offset="100%" stop-color="#e6c76b" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="grad2" cx="70%" cy="60%" r="60%">
+                <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.10"/>
+                <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="grad3" cx="50%" cy="20%" r="50%">
+                <stop offset="0%" stop-color="#8a2be2" stop-opacity="0.08"/>
+                <stop offset="100%" stop-color="#8a2be2" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="#090912"/>
+        <circle cx="400" cy="200" r="300" fill="url(#grad1)">
+            <animate attributeName="cx" values="300;500;300" dur="22s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="150;250;150" dur="18s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="280;320;280" dur="25s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="800" cy="400" r="250" fill="url(#grad2)">
+            <animate attributeName="cx" values="700;900;700" dur="26s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="350;450;350" dur="20s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="230;270;230" dur="28s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="600" cy="100" r="200" fill="url(#grad3)">
+            <animate attributeName="cx" values="500;700;500" dur="30s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="50;150;50" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="180;220;180" dur="32s" repeatCount="indefinite"/>
+        </circle>
+    </svg>
+
+    <style>
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
         }
-      });
-    });
-    window.addEventListener('popstate', () => {
-      setActiveSection(window.location.hash || '#info');
-    });
-    setActiveSection(window.location.hash || '#info');
+    </style>
 
-    let disqusLoaded = false;
-    function loadDisqus() {
-      if (disqusLoaded) return;
-      disqusLoaded = true;
-      var d = document, s = d.createElement('script');
-      s.src = 'https://Lighting.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      s.async = true;
-      (d.head || d.body).appendChild(s);
-    }
+    <div class="container">
+        <header>
+            <div class="logo">SPLASH</div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio" class="nav-link active" aria-current="page"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="https://www.cgtrader.com/designers/splash-3d" target="_blank" rel="noopener noreferrer"><i class="fas fa-cube"></i> Modelos 3D</a></li>
+                    <li><a href="#contacto" class="nav-link"><i class="fas fa-envelope"></i> Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    const btnMenu = document.getElementById('btn-menu');
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-    btnMenu.addEventListener('click', () => {
-      const expanded = btnMenu.getAttribute('aria-expanded') === 'true';
-      btnMenu.setAttribute('aria-expanded', String(!expanded));
-      sidebar.classList.toggle('active');
-      content.classList.toggle('shifted');
-    });
+        <section id="inicio" class="active">
+            <div class="hero">
+                <h1>Modelos 3D Profesionales para Proyectos Exigentes</h1>
+                <p>Soy SPLASH, artista 3D especializado en crear assets de alta calidad para arquitectura, videojuegos, visualización y realidad virtual. Mis modelos combinan precisión técnica, estética visual y optimización para producción.</p>
+            </div>
 
-    let mouseMoveTimeout;
-    document.addEventListener('mousemove', (e) => {
-      const openThreshold = 20;
-      const closeThreshold = 40;
-      if (window.innerWidth > 768) {
-        clearTimeout(mouseMoveTimeout);
-        mouseMoveTimeout = setTimeout(() => {
-          if (e.clientX <= openThreshold) {
-            if (!sidebar.classList.contains('active')) {
-              sidebar.classList.add('active');
-              content.classList.add('shifted');
-              btnMenu.setAttribute('aria-expanded', 'true');
+            <div class="models-section">
+                <h2>Mis Modelos Destacados</h2>
+                <div class="model-categories">
+                    <!-- Porsche -->
+                    <div class="category-card">
+                        <h3>High-Quality Classic Porsche 911 Turbo</h3>
+                        <p>Recreación detallada del Porsche 911 Turbo (930) de finales de los 70/principios de los 80. Incluye carrocería ancha, alerón "whale tail", faros redondos y ruedas estilo Fuchs. Ideal para visualización automotriz y renders cinematográficos.</p>
+                        <a href="https://www.cgtrader.com/3d-models/vehicle/industrial-vehicle/high-quality-classic-porsche-911-turbo-3d-model" target="_blank" rel="noopener noreferrer" class="btn">
+                            <i class="fas fa-eye"></i> Ver Modelo
+                        </a>
+                    </div>
+
+                    <!-- Mercedes AMG GT-R -->
+                    <div class="category-card">
+                        <h3>Mercedes-Benz AMG GT-R – Game-ready PBR</h3>
+                        <p>Modelo del AMG GT-R 2017 optimizado para tiempo real. Incluye rigging básico, topología limpia, UVs sin solapamiento y texturas PBR. Perfecto para Unity, Unreal Engine, simuladores y VR/AR.</p>
+                        <a href="https://www.cgtrader.com/free-3d-models/vehicle/industrial-vehicle/mercedes-benz-amg-gtr-ae3bc5d2-8430-45c3-bae5-c38f35ca7133" target="_blank" rel="noopener noreferrer" class="btn">
+                            <i class="fas fa-car"></i> Ver Modelo
+                        </a>
+                    </div>
+
+                    <!-- Toyota Supra MKV -->
+                    <div class="category-card">
+                        <h3>Supra MKV – Rigged & Game-Ready</h3>
+                        <p>Toyota GR Supra riggeado y optimizado para tiempo real. Incluye interior y exterior detallados, texturas PBR y múltiples formatos (.fbx, .blend, .obj). Ideal para juegos, animación, VR y visualización automotriz.</p>
+                        <a href="https://www.cgtrader.com/3d-models/car/racing-car/supra-mkv-rigged-model-game-ready" target="_blank" rel="noopener noreferrer" class="btn">
+                            <i class="fas fa-racing-helmet"></i> Ver Modelo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto">
+            <div class="hero">
+                <h1>¿Trabajamos Juntos?</h1>
+                <p>¿Necesitas un modelo personalizado? ¿Tienes una idea para una colaboración? Estoy abierto a proyectos, comisiones y consultas profesionales.</p>
+            </div>
+
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2><i class="fas fa-headset"></i> Información</h2>
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <div class="info-text">
+                            <h3>Artista 3D</h3>
+                            <p>SPLASH — Modelador profesional</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="info-text">
+                            <h3>Email</h3>
+                            <a href="mailto:Lighting2385@gmail.com">Lighting2385@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-globe"></i>
+                        <div class="info-text">
+                            <h3>CGTrader</h3>
+                            <a href="https://www.cgtrader.com/designers/splash-3d" target="_blank" rel="noopener noreferrer">Perfil Oficial</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div class="info-text">
+                            <h3>Respuesta</h3>
+                            <p>En 24–48 horas hábiles</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.cgtrader.com/designers/splash-3d" class="social-link" target="_blank" rel="noopener noreferrer" title="CGTrader">
+                            <i class="fas fa-cube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h2><i class="fas fa-paper-plane"></i> Envíame un Mensaje</h2>
+                    <form action="https://formspree.io/f/xqayldaa" method="POST">
+                        <div class="form-group">
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Tu nombre" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="tu@email.com" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Colaboración, comisión, etc." required />
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" name="message" class="form-control" placeholder="Cuéntame sobre tu proyecto..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Enviar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 SPLASH — Modelos 3D Profesionales. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) targetSection.classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+            });
+            const activeLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+                activeLink.setAttribute('aria-current', 'page');
             }
-          } else if (e.clientX > closeThreshold) {
-            if (sidebar.classList.contains('active')) {
-              sidebar.classList.remove('active');
-              content.classList.remove('shifted');
-              btnMenu.setAttribute('aria-expanded', 'false');
-            }
-          }
-        }, 100);
-      }
-    });
 
-    if (window.location.hash === '#contacto') {
-      loadDisqus();
-    }
-  </script>
+            history.pushState(null, '', `#${sectionId}`);
+            scrollToTop();
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                showSection(targetId);
+            });
+        });
+
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1) || 'inicio';
+            showSection(hash);
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const hash = window.location.hash.substring(1) || 'inicio';
+                showSection(hash);
+            }, 100);
+        });
+    </script>
 </body>
 </html>
