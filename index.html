@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SPLASH — Modelos 3D profesionales para videojuegos, arquitectura, VR y visualización. Assets riggeados, optimizados y listos para Unity, Unreal Engine y más." />
@@ -23,6 +24,26 @@
             --transition: all 0.5s cubic-bezier(0.16, 0.84, 0.44, 1);
             --glow-accent: 0 0 25px rgba(230, 199, 107, 0.7);
             --glow-success: 0 0 25px rgba(0, 240, 255, 0.6);
+=======
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPLASH - Modelos 3D Profesionales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a0a14;
+            --secondary: #121220;
+            --accent: #d4af37;
+            --accent-light: #f0e68c;
+            --text: #e0e0ff;
+            --text-secondary: #a0a0c0;
+            --success: #00e6f6;
+            --card-bg: rgba(20, 20, 35, 0.7);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --glow: 0 0 15px rgba(212, 175, 55, 0.4);
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         * {
@@ -31,6 +52,7 @@
             box-sizing: border-box;
         }
 
+<<<<<<< HEAD
         html {
             scroll-behavior: smooth;
         }
@@ -42,21 +64,50 @@
             background: #090912;
             position: relative;
             overflow-x: hidden;
+=======
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), #080810);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 230, 246, 0.1) 0%, transparent 20%);
+            z-index: -1;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+<<<<<<< HEAD
             position: relative;
             z-index: 2;
         }
 
         /* Header */
+=======
+        }
+
+        /* Header Styles */
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+<<<<<<< HEAD
             padding: 1.4rem 0;
             margin-bottom: 3.2rem;
         }
@@ -72,6 +123,22 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             text-shadow: 0 0 12px rgba(230, 199, 107, 0.5);
+=======
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         nav ul {
@@ -83,15 +150,24 @@
         nav a {
             color: var(--text-secondary);
             text-decoration: none;
+<<<<<<< HEAD
             font-weight: 600;
             font-size: 1.12rem;
+=======
+            font-weight: 500;
+            font-size: 1.1rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             position: relative;
             padding: 0.5rem 0;
             transition: var(--transition);
         }
 
+<<<<<<< HEAD
         nav a:hover,
         nav a.active {
+=======
+        nav a:hover, nav a.active {
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             color: var(--accent);
         }
 
@@ -103,25 +179,37 @@
             width: 0;
             height: 2px;
             background: var(--accent);
+<<<<<<< HEAD
             border-radius: 2px;
             transition: var(--transition);
         }
 
         nav a:hover::after,
         nav a.active::after {
+=======
+            transition: var(--transition);
+        }
+
+        nav a:hover::after, nav a.active::after {
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             width: 100%;
         }
 
         /* Sections */
         section {
             display: none;
+<<<<<<< HEAD
             opacity: 0;
             transform: translateY(25px);
             transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 0.84, 0.44, 1);
+=======
+            animation: fadeIn 0.6s ease forwards;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         section.active {
             display: block;
+<<<<<<< HEAD
             opacity: 1;
             transform: translateY(0);
         }
@@ -130,10 +218,24 @@
         .hero {
             text-align: center;
             margin-bottom: 4.5rem;
+=======
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             padding: 2rem 0;
         }
 
         .hero h1 {
+<<<<<<< HEAD
             font-family: 'Orbitron', sans-serif;
             font-size: 3.6rem;
             font-weight: 700;
@@ -167,31 +269,78 @@
             margin-bottom: 2.8rem;
             color: var(--accent);
             text-shadow: 0 0 12px rgba(230, 199, 107, 0.4);
+=======
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Models Gallery */
+        .models-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .models-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .model-categories {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+<<<<<<< HEAD
             gap: 2.4rem;
+=======
+            gap: 2rem;
+            margin-top: 2rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .category-card {
             background: var(--card-bg);
+<<<<<<< HEAD
             border-radius: 22px;
             padding: 2.3rem;
             width: 295px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(230, 199, 107, 0.1);
+=======
+            border-radius: 20px;
+            padding: 2rem;
+            width: 280px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             transition: var(--transition);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+<<<<<<< HEAD
             backdrop-filter: blur(8px);
+=======
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .category-card:hover {
             transform: translateY(-10px);
+<<<<<<< HEAD
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), var(--glow-accent);
             border-color: rgba(230, 199, 107, 0.3);
         }
@@ -202,10 +351,20 @@
             color: var(--accent);
             font-weight: 600;
             line-height: 1.3;
+=======
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3);
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .category-card p {
             color: var(--text-secondary);
+<<<<<<< HEAD
             margin-bottom: 1.6rem;
             font-size: 0.98rem;
             line-height: 1.6;
@@ -222,10 +381,28 @@
             font-weight: 700;
             font-size: 1.05rem;
             border-radius: 12px;
+=======
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent), #b89b2a);
+            color: var(--primary);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 10px;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
+<<<<<<< HEAD
             gap: 0.7rem;
             text-decoration: none;
             justify-content: center;
@@ -243,6 +420,22 @@
             display: flex;
             gap: 2.8rem;
             margin-bottom: 4.5rem;
+=======
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         @media (max-width: 900px) {
@@ -251,6 +444,7 @@
             }
         }
 
+<<<<<<< HEAD
         .contact-info,
         .contact-form {
             flex: 1;
@@ -267,6 +461,33 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 1.85rem;
             margin-bottom: 2.2rem;
+=======
+        .contact-info {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .contact-info h2, .contact-form h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             color: var(--accent);
             display: flex;
             align-items: center;
@@ -275,28 +496,44 @@
 
         .info-item {
             display: flex;
+<<<<<<< HEAD
             gap: 1.3rem;
             margin-bottom: 1.6rem;
             padding: 1rem;
             border-radius: 14px;
+=======
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             transition: var(--transition);
         }
 
         .info-item:hover {
+<<<<<<< HEAD
             background: rgba(230, 199, 107, 0.08);
+=======
+            background: rgba(212, 175, 55, 0.1);
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             transform: translateY(-3px);
         }
 
         .info-item i {
             font-size: 1.4rem;
             color: var(--accent);
+<<<<<<< HEAD
             min-width: 38px;
+=======
+            min-width: 36px;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .info-text h3 {
+<<<<<<< HEAD
             font-size: 1.18rem;
             margin-bottom: 0.3rem;
             color: var(--text);
@@ -308,6 +545,16 @@
             color: var(--text-secondary);
             text-decoration: none;
             font-weight: 400;
+=======
+            font-size: 1.15rem;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+        }
+
+        .info-text p, .info-text a {
+            color: var(--text-secondary);
+            text-decoration: none;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .info-text a:hover {
@@ -316,46 +563,81 @@
 
         .social-links {
             display: flex;
+<<<<<<< HEAD
             gap: 1.1rem;
+=======
+            gap: 1rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             margin-top: 2rem;
         }
 
         .social-link {
+<<<<<<< HEAD
             width: 48px;
             height: 48px;
+=======
+            width: 44px;
+            height: 44px;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             background: rgba(230, 199, 107, 0.1);
             color: var(--accent);
             font-size: 1.15rem;
+=======
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+            font-size: 1.1rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             transition: var(--transition);
         }
 
         .social-link:hover {
             background: var(--accent);
             color: var(--primary);
+<<<<<<< HEAD
             transform: translateY(-3px) scale(1.08);
             box-shadow: var(--glow-accent);
         }
 
         .form-group {
             margin-bottom: 1.7rem;
+=======
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .form-group label {
             display: block;
+<<<<<<< HEAD
             margin-bottom: 0.7rem;
             color: var(--text);
             font-weight: 600;
+=======
+            margin-bottom: 0.6rem;
+            color: var(--text);
+            font-weight: 500;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
 
         .form-control {
             width: 100%;
+<<<<<<< HEAD
             padding: 1.1rem 1.3rem;
             background: rgba(20, 20, 38, 0.6);
             border: 1px solid rgba(230, 199, 107, 0.3);
+=======
+            padding: 1rem 1.2rem;
+            background: rgba(30, 30, 50, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             border-radius: 12px;
             color: var(--text);
             font-family: 'Poppins', sans-serif;
@@ -366,17 +648,26 @@
         .form-control:focus {
             outline: none;
             border-color: var(--accent);
+<<<<<<< HEAD
             box-shadow: var(--glow-accent);
         }
 
         textarea.form-control {
             min-height: 150px;
+=======
+            box-shadow: var(--glow);
+        }
+
+        textarea.form-control {
+            min-height: 140px;
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
             resize: vertical;
         }
 
         /* Footer */
         footer {
             text-align: center;
+<<<<<<< HEAD
             padding: 2.2rem 0;
             color: var(--text-secondary);
             font-size: 0.95rem;
@@ -408,10 +699,32 @@
             .contact-info,
             .contact-form { padding: 2.2rem 1.5rem; }
             .info-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+=======
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            nav ul { gap: 1.2rem; }
+            .contact-info, .contact-form { padding: 1.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2rem; }
+            .logo { font-size: 1.8rem; }
+            .social-links { flex-wrap: wrap; }
+            .btn { width: 100%; justify-content: center; }
+            .model-categories { flex-direction: column; align-items: center; }
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 
     <!-- 🌌 FONDO ANIMADO VISIBLE - SIN PROBLEMAS DE VISIBILIDAD -->
     <svg class="dynamic-bg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
@@ -494,15 +807,61 @@
                         <h3>Mercedes-Benz AMG GT-R – Game-ready PBR</h3>
                         <p>Modelo del AMG GT-R 2017 optimizado para tiempo real. Incluye rigging básico, topología limpia, UVs sin solapamiento y texturas PBR. Perfecto para Unity, Unreal Engine, simuladores y VR/AR.</p>
                         <a href="https://www.cgtrader.com/free-3d-models/vehicle/industrial-vehicle/mercedes-benz-amg-gtr-ae3bc5d2-8430-45c3-bae5-c38f35ca7133" target="_blank" rel="noopener noreferrer" class="btn">
+=======
+    <div class="container">
+        <header>
+            <div class="logo">SPLASH</div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="https://www.cgtrader.com/designers/splash-3d" target="_blank"><i class="fas fa-cube"></i> Modelos 3D</a></li>
+                    <li><a href="#contacto" class="nav-link"><i class="fas fa-envelope"></i> Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Sección Inicio -->
+        <section id="inicio" class="active">
+            <div class="hero">
+                <h1>Modelos 3D Profesionales para Proyectos Exigentes</h1>
+                <p>Soy SPLASH, artista 3D especializado en crear assets de alta calidad para arquitectura, videojuegos, visualización y realidad virtual. Mis modelos combinan precisión técnica, estética visual y optimización para producción.</p>
+            </div>
+
+            <div class="models-section">
+                <h2>Mis Modelos Destacados</h2>
+                <div class="model-categories">
+                    <!-- Modelo 1: Porsche 911 Turbo -->
+                    <div class="category-card">
+                        <h3>Porsche 911 Turbo</h3>
+                        <p>Modelo de alta calidad del icónico Porsche 911 Turbo, perfecto para renders fotorrealistas y proyectos de automoción.</p>
+                        <a href="https://www.cgtrader.com/3d-models/vehicle/industrial-vehicle/high-quality-classic-porsche-911-turbo-3d-model" target="_blank" class="btn">
+                            <i class="fas fa-eye"></i> Ver Modelo
+                        </a>
+                    </div>
+
+                    <!-- Modelo 2: Mercedes-Benz AMG GT-R -->
+                    <div class="category-card">
+                        <h3>Mercedes-Benz AMG GT-R</h3>
+                        <p>Modelo game-ready con texturas PBR y rigging básico, ideal para juegos, simuladores y AR/VR.</p>
+                        <a href="https://www.cgtrader.com/free-3d-models/vehicle/industrial-vehicle/mercedes-benz-amg-gtr-ae3bc5d2-8430-45c3-bae5-c38f35ca7133" target="_blank" class="btn">
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
                             <i class="fas fa-car"></i> Ver Modelo
                         </a>
                     </div>
 
+<<<<<<< HEAD
                     <!-- Toyota Supra MKV -->
                     <div class="category-card">
                         <h3>Supra MKV – Rigged & Game-Ready</h3>
                         <p>Toyota GR Supra riggeado y optimizado para tiempo real. Incluye interior y exterior detallados, texturas PBR y múltiples formatos (.fbx, .blend, .obj). Ideal para juegos, animación, VR y visualización automotriz.</p>
                         <a href="https://www.cgtrader.com/3d-models/car/racing-car/supra-mkv-rigged-model-game-ready" target="_blank" rel="noopener noreferrer" class="btn">
+=======
+                    <!-- Modelo 3: Supra MKV -->
+                    <div class="category-card">
+                        <h3>Toyota GR Supra MKV</h3>
+                        <p>Modelo rigged y optimizado para Unreal Engine y Unity, con detalles interiores y exteriores realistas.</p>
+                        <a href="https://www.cgtrader.com/3d-models/car/racing-car/supra-mkv-rigged-model-game-ready" target="_blank" class="btn">
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
                             <i class="fas fa-racing-helmet"></i> Ver Modelo
                         </a>
                     </div>
@@ -510,6 +869,10 @@
             </div>
         </section>
 
+<<<<<<< HEAD
+=======
+        <!-- Sección Contacto -->
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         <section id="contacto">
             <div class="hero">
                 <h1>¿Trabajamos Juntos?</h1>
@@ -537,7 +900,11 @@
                         <i class="fas fa-globe"></i>
                         <div class="info-text">
                             <h3>CGTrader</h3>
+<<<<<<< HEAD
                             <a href="https://www.cgtrader.com/designers/splash-3d" target="_blank" rel="noopener noreferrer">Perfil Oficial</a>
+=======
+                            <a href="https://www.cgtrader.com/designers/splash-3d" target="_blank">Perfil Oficial</a>
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
                         </div>
                     </div>
                     <div class="info-item">
@@ -547,8 +914,14 @@
                             <p>En 24–48 horas hábiles</p>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div class="social-links">
                         <a href="https://www.cgtrader.com/designers/splash-3d" class="social-link" target="_blank" rel="noopener noreferrer" title="CGTrader">
+=======
+                    <!-- ✅ SOLO CGTRADER, SIN OTROS ICONOS -->
+                    <div class="social-links">
+                        <a href="https://www.cgtrader.com/designers/splash-3d" class="social-link" target="_blank" title="CGTrader">
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
                             <i class="fas fa-cube"></i>
                         </a>
                     </div>
@@ -556,6 +929,7 @@
 
                 <div class="contact-form">
                     <h2><i class="fas fa-paper-plane"></i> Envíame un Mensaje</h2>
+<<<<<<< HEAD
                     <form action="https://formspree.io/f/xqayldaa" method="POST">
                         <div class="form-group">
                             <label for="name">Nombre</label>
@@ -568,6 +942,21 @@
                         <div class="form-group">
                             <label for="subject">Asunto</label>
                             <input type="text" id="subject" name="subject" class="form-control" placeholder="Colaboración, comisión, etc." required />
+=======
+                    <!-- ✅ FORMULARIO REAL CON FORMSPREE -->
+                    <form action="https://formspree.io/f/xqayldaa" method="POST">
+                        <div class="form-group">
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Colaboración, comisión, etc." required>
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
                         </div>
                         <div class="form-group">
                             <label for="message">Mensaje</label>
@@ -583,6 +972,7 @@
     </div>
 
     <footer>
+<<<<<<< HEAD
         <p>&copy; 2025 SPLASH — Modelos 3D Profesionales. Todos los derechos reservados.</p>
     </footer>
 
@@ -628,6 +1018,52 @@
                 const hash = window.location.hash.substring(1) || 'inicio';
                 showSection(hash);
             }, 100);
+=======
+        <p>&copy; 2023 SPLASH — Modelos 3D Profesionales. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Cambiar entre secciones
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Actualizar URL
+                const targetId = this.getAttribute('href').substring(1);
+                history.pushState(null, '', `#${targetId}`);
+                
+                // Activar enlace
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Mostrar sección
+                document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // Soporte para navegación con botón atrás/adelante
+        window.addEventListener('popstate', function() {
+            const hash = window.location.hash.substring(1) || 'inicio';
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-link[href="#${hash}"]`);
+            if (activeLink) activeLink.classList.add('active');
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            const targetSection = document.getElementById(hash);
+            if (targetSection) targetSection.classList.add('active');
+        });
+
+        // Inicializar según URL actual
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1) || 'inicio';
+            if (hash === 'contacto') {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                const contactLink = document.querySelector('.nav-link[href="#contacto"]');
+                if (contactLink) contactLink.classList.add('active');
+                document.getElementById('inicio').classList.remove('active');
+                document.getElementById('contacto').classList.add('active');
+            }
+>>>>>>> b785e5091d7b307cbca619add348b79540c78dc1
         });
     </script>
 </body>
